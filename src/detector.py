@@ -103,3 +103,39 @@ def detect_success_after_failures(events, threshold=3):
             })
 
     return alerts
+
+
+def detect_password_spraying(events, threshold=3):
+    """
+    Detect possible password-spraying activity.
+
+    If the same source IP generates failed login attempts
+    against multiple different usernames, create an alert.
+    """
+
+    attempts_by_ip = defaultdict(set)
+
+    for event in events:
+        if event["event_type"] == "FAILED_LOGIN":
+            source_ip = event.get("source_ip")
+            username = event.get("username")
+
+            if source_ip and username:
+                attempts_by_ip[source_ip].add(username)
+
+    alerts = []
+
+    for source_ip, usernames in attempts_by_ip.items():
+        if len(usernames) >= threshold:
+            alerts.append({
+                "alert_type": "PASSWORD_SPRAYING",
+                "severity": "HIGH",
+                "source_ip": source_ip,
+                "targeted_usernames": len(usernames),
+                "description": (
+                    f"Possible password-spraying activity detected from "
+                    f"{source_ip} targeting {len(usernames)} different usernames."
+                )
+            })
+
+    return alerts

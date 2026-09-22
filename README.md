@@ -11,6 +11,7 @@ The analyzer currently looks for three types of activity:
 - SSH brute-force attempts
 - Repeated invalid-user authentication attempts
 - A successful login after multiple failed attempts
+- Password-spraying activity
 
 Each detected event is turned into an alert with:
 
@@ -70,22 +71,26 @@ This rule looks at the sequence of events rather than treating each log entry in
 
 If an IP has multiple failed login attempts followed by a successful login, the activity is flagged as CRITICAL.
 
+This is where event correlation comes in. A single failed login isn't very interesting, but several failures followed by a successful login tell a different story.
+
+### Password spraying
+
+The analyzer looks for failed login attempts from the same source IP against multiple different usernames.
+
+If an IP targets 3 or more different usernames, the activity is flagged as `HIGH`.
+
 For example:
 ```text
-192.168.1.50
+10.10.10.50
 
-Failed login
-Failed login
-Failed login
-Failed login
-Failed login
-Successful login
+admin       ❌
+guest       ❌
+developer   ❌
 
-            ↓
+        ↓
 
-SUCCESS_AFTER_MULTIPLE_FAILURES
+PASSWORD_SPRAYING
 ```
-This is where event correlation comes in. A single failed login isn't very interesting, but several failures followed by a successful login tell a different story.
 
 ## Example
 

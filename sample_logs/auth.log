@@ -7,3 +7,6 @@ Sep 22 10:01:30 ubuntu sshd[1206]: Accepted password for admin from 192.168.1.50
 Sep 22 10:02:10 ubuntu sshd[1207]: Accepted password for sneha from 192.168.1.20 port 42300 ssh2
 Sep 22 10:03:44 ubuntu sshd[1208]: Invalid user test from 10.10.10.25 port 44001
 Sep 22 10:03:47 ubuntu sshd[1209]: Invalid user admin from 10.10.10.25 port 44002
+Sep 22 10:05:10 ubuntu sshd[1210]: Failed password for admin from 10.10.10.50 port 45001 ssh2
+Sep 22 10:05:13 ubuntu sshd[1211]: Failed password for guest from 10.10.10.50 port 45002 ssh2
+Sep 22 10:05:16 ubuntu sshd[1212]: Failed password for developer from 10.10.10.50 port 45003 ssh2

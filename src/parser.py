@@ -1,5 +1,4 @@
 import re
-from datetime import datetime
 
 
 def parse_log_line(line):
@@ -28,6 +27,19 @@ def parse_log_line(line):
     )
 
     data["source_ip"] = ip_match.group(0) if ip_match else None
+
+    # Extract username if one exists in the message
+    username_match = re.search(
+        r"(?:for|user)\s+(?:invalid\s+user\s+)?(\S+)",
+        data["message"],
+        re.IGNORECASE
+    )
+
+    data["username"] = (
+        username_match.group(1)
+        if username_match
+        else None
+    )
 
     # Identify authentication result
     message_lower = data["message"].lower()

@@ -4,7 +4,8 @@ from parser import parse_log_file
 from detector import (
     detect_ssh_brute_force,
     detect_invalid_users,
-    detect_success_after_failures
+    detect_success_after_failures,
+    detect_password_spraying
 )
 from risk_engine import enrich_alert
 
@@ -42,6 +43,11 @@ def main():
         detect_success_after_failures(events)
     )
 
+    # Detection Rule 4: Password spraying
+    alerts.extend(
+        detect_password_spraying(events)
+    )
+
     print(f"[+] Alerts detected: {len(alerts)}")
 
     print("\n[3] Calculating risk scores...")
@@ -65,7 +71,16 @@ def main():
             print(f"Risk Score: {alert['risk_score']}")
             print(f"Risk Category: {alert['risk_category']}")
             print(f"Source IP: {alert['source_ip']}")
-            print(f"Failed Attempts: {alert['failed_attempts']}")
+
+            if "failed_attempts" in alert:
+                print(f"Failed Attempts: {alert['failed_attempts']}")
+
+            if "targeted_usernames" in alert:
+                print(
+                    f"Targeted Usernames: "
+                    f"{alert['targeted_usernames']}"
+                )
+
             print(f"Description: {alert['description']}")
 
     # Save alerts to JSON report
